@@ -46,7 +46,7 @@ fn into_tree<T: TreeFloat>(data: &mut [[T; 3]], idxs: &mut [Index], level: usize
             // on level 3 we get 2^4 = 16 > 8 -> so sequential.
             let lte_8_threads = 2_usize.pow(1 + level as u32) > 8;
             let small_data = left_data.len() < 25_000;
-            let sequential = small_data | lte_8_threads;
+            let sequential = small_data | lte_8_threads | cfg!(target_arch = "wasm32");
             if sequential {
                 // Need to call into_tree twice -- only one is unrolled
                 into_tree(left_data, left_idxs, level + 1);
@@ -92,7 +92,7 @@ fn into_tree_no_idxs<T: TreeFloat>(data: &mut [[T; 3]], level: usize) {
             // on level 3 we get 2^4 = 16 > 8 -> so sequential.
             let lte_8_threads = 2_usize.pow(1 + level as u32) > 8;
             let small_data = left_data.len() < 25_000;
-            let sequential = small_data | lte_8_threads;
+            let sequential = small_data | lte_8_threads | cfg!(target_arch = "wasm32");
             if sequential {
                 // Need to call into_tree twice -- only one is unrolled
                 into_tree_no_idxs(left_data, level + 1);
